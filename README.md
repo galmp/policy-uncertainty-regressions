@@ -38,87 +38,75 @@ For each industry portfolio, I estimate time-series regressions of the form:
 
 ### Baseline specification (no controls)
 
-\[
-R_{i,t+1} = \alpha_i + \beta_i \cdot Uncertainty_t + \varepsilon_{i,t}
-\]
+Excess Return = Alpha + Beta × Uncertainty + Error
 
 ### Extended specification (with controls)
 
-\[
-R_{i,t+1} = \alpha_i + \beta_i \cdot Uncertainty_t + \gamma_1 MKT_t + \gamma_2 SMB_t + \gamma_3 HML_t + \varepsilon_{i,t}
-\]
+Excess Return = Alpha + Beta × Uncertainty  
++ Market Factor + SMB + HML + Error
 
 Where:
 - Excess Return refers to industry portfolio returns minus the risk-free rate  
 - Uncertainty is either CPU or UCT  
-- MKT, SMB, HML are the standard Fama-French risk factors  
+- Market, SMB, HML are the Fama-French risk factors  
 
-This approach follows standard practice in empirical asset pricing research.
-
----
-
-## Results & Interpretation
-
-The main quantity of interest is **β (beta)** on the uncertainty variable (CPU or UCT).  
-It captures how next-month industry excess returns co-move with uncertainty.
-
-### How to read the tables
-Each table reports results for each industry under two specifications:
-
-- **No controls**: Excess Return ~ Uncertainty  
-- **FF3 controls**: Excess Return ~ Uncertainty + MKT + SMB + HML  
-
-For each industry and model you will see:
-- **Beta (β)**: economic direction and magnitude  
-- **p-value**: statistical significance  
-- **Significance stars** (if included in export):  
-  `*** p < 0.01`, `** p < 0.05`, `* p < 0.10`
-
-### Interpretation guide
-- **β > 0**: higher uncertainty is associated with higher next-month excess returns  
-  (consistent with a risk-premium interpretation, not causal evidence)
-- **β < 0**: higher uncertainty is associated with lower next-month excess returns  
-  (consistent with risk-off pricing)
-- If results remain significant **after FF3 controls**, the uncertainty measure provides
-  incremental explanatory power beyond standard risk factors.
+This approach follows standard empirical asset pricing practice.
 
 ---
 
-## Visualizations
+## Results Visualization
 
-The project automatically generates publication-ready figures saved in the `results/` folder.
+To complement the regression tables, the project produces visualization outputs that summarize the estimated coefficients and their statistical significance.
 
-### CPU (Climate Policy Uncertainty)
+### CPU Results (with FF3 controls)
 
-**Betas across industries (FF3 controls):**
-![CPU Betas](results/CPU_betas.png)
+**Betas across industries**
+![CPU Betas](png/CPU_betas.png)
 
-**Statistical significance (volcano plot):**
-![CPU Volcano](results/CPU_volcano.png)
+**Statistical significance (volcano plot)**
+![CPU Volcano](png/CPU_volcano.png)
 
 ---
 
-### UCT (Uncertainty due to Climate Transition)
+### UCT Results (with FF3 controls)
 
-**Betas across industries (FF3 controls):**
-![UCT Betas](results/UCT_betas.png)
+**Betas across industries**
+![UCT Betas](png/UCT_betas.png)
 
-**Statistical significance (volcano plot):**
-![UCT Volcano](results/UCT_volcano.png)
+**Statistical significance (volcano plot)**
+![UCT Volcano](png/UCT_volcano.png)
 
 ---
 
 ## Outputs
 
-Running the script produces the following files in the `results/` folder:
+Running the script produces the following files:
 
+**Tables (in `results/` folder):**
 - `CPU_table.csv` — formatted regression table (CPU)  
 - `UCT_table.csv` — formatted regression table (UCT)  
 - `results.csv` — raw coefficients (baseline model)  
 - `results_control.csv` — raw coefficients (FF3 controls)  
-- Four publication-ready figures (`.png`)  
 
-These outputs are directly usable in academic reports, papers, presentations, or further analysis.
+**Figures (in `png/` folder):**
+- `CPU_betas.png`  
+- `CPU_volcano.png`  
+- `UCT_betas.png`  
+- `UCT_volcano.png`  
+
+These outputs are directly usable in reports, academic-style papers, and portfolio demonstrations.
+
+---
+
+## Limitations
+
+This project is intentionally focused on transparency and replicability rather than causal identification.
+
+- No causal identification strategy (e.g., IV, natural experiments)  
+- Results depend on the selected sample period  
+- No multiple-testing correction across industries  
+
+These design choices are deliberate, as the goal is to demonstrate clean empirical implementation rather than causal claims.
 
 ---
 
@@ -126,8 +114,8 @@ These outputs are directly usable in academic reports, papers, presentations, or
 
 1. Open RStudio  
 2. Set the working directory to the project root  
-3. Run the script:
+3. Run:
 
 ```r
-source("scripts/Data Analysis.R")
+source("scripts/Data An
 
