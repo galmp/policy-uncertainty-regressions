@@ -426,3 +426,85 @@ modelsummary(
 )
 
 cat("\n✔ Table created: results/CPU_table_paper.docx\n")
+# ===============================
+# FILE PATHS (robust)
+# ===============================
+data_dir <- "data"
+if (!dir.exists(data_dir)) data_dir <- "."  # fallback if data folder not used
+
+CPU <- read.csv(file.path(data_dir, "CPU index.csv"))
+UCT <- read.csv(file.path(data_dir, "UCT.csv"))
+
+library(data.table)
+Portfolios_raw <- fread(file.path(data_dir, "10_Industry_Portfolios.txt"), skip = 11)
+Fama_raw       <- fread(file.path(data_dir, "F-F_Research_Data_Factors.txt"), skip = 3)
+# ===============================
+# STEP 10: VISUALIZATIONS (PNG OUTPUT - FINAL WORKING VERSION)
+# ===============================
+library(ggplot2)
+library(dplyr)
+
+# Ensure results folder exists
+if (!dir.exists("results")) dir.create("results")
+
+# Safety checks
+stopifnot(exists("CPU_control"), exists("UCT_control"))
+stopifnot(nrow(CPU_control) > 0, nrow(UCT_control) > 0)
+
+# -------------------------------
+# Volcano plot
+# -------------------------------
+plot_volcano <- function(df, title, filename) {
+  
+  df <- df %>% mutate(sig = P_value < 0.10)
+  
+  p <- ggplot(df, aes(x = Beta, y = -log10(P_value))) +
+    geom_point(aes(shape = sig), size = 2) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    labs(
+      title = title,
+      x = "Beta",
+      y = "-log10(p-value)"
+    ) +
+    theme_minimal(base_size = 12)
+  
+  out_path <- file.path("results", filename)
+  ggsave(out_path, plot = p, width = 8, height = 5, dpi = 300)
+  
+  cat("✅ Saved:", out_path, "| exists =", file.exists(out_path), "\n")
+}
+
+# -------------------------------
+# Bar plot (betas)
+# -------------------------------
+plot_betas <- function(df, title, filename) {
+  
+  df <- df %>% mutate(sig = P_value < 0.10)
+  
+  p <- ggplot(df, aes(x = reorder(Industry, Beta), y = Beta)) +
+    geom_col() +
+    coord_flip() +
+    labs(
+      title = title,
+      x = "Industry",
+      y = "Beta"
+    ) +
+    theme_minimal(base_size = 12)
+  
+  out_path <- file.path("results", filename)
+  ggsave(out_path, plot = p, width = 8, height = 5, dpi = 300)
+  
+  cat("✅ Saved:", out_path, "| exists =", file.exists(out_path), "\n")
+}
+
+# -------------------------------
+# Create all PNGs
+# -------------------------------
+plot_betas(CPU_control, "CPU Betas Across Industries (FF3 controls)", "CPU_betas.png")
+plot_betas(UCT_control, "UCT Betas Across Industries (FF3 controls)", "UCT_betas.png")
+
+plot_volcano(CPU_control, "CPU Significance Across Industries (FF3 controls)", "CPU_volcano.png")
+plot_volcano(UCT_control, "UCT Significance Across Industries (FF3 controls)", "UCT_volcano.png")
+
+cat("\n✅ DONE. Files in results/:\n")
+print(list.files("results"))
