@@ -23,10 +23,10 @@ have statistically significant explanatory power for the excess returns of the F
 
 All datasets are publicly available and commonly used in academic research:
 
-- Fama-French 10 Industry Portfolios (monthly returns)
-- Fama-French 3 Factors (Market, SMB, HML)
-- Climate Policy Uncertainty (CPU) index
-- Uncertainty due to Climate Transition (UCT) index
+- Fama-French 10 Industry Portfolios (monthly returns)  
+- Fama-French 3 Factors (Market, SMB, HML)  
+- Climate Policy Uncertainty (CPU) index  
+- Uncertainty due to Climate Transition (UCT) index  
 
 The raw datasets are stored in the `data/` folder.
 
@@ -38,22 +38,26 @@ For each industry portfolio, I estimate time-series regressions of the form:
 
 ### Baseline specification (no controls)
 
-Excess Return = Alpha + Beta × Uncertainty + Error
+\[
+R_{i,t+1} = \alpha_i + \beta_i \cdot Uncertainty_t + \varepsilon_{i,t}
+\]
 
 ### Extended specification (with controls)
 
-Excess Return = Alpha + Beta × Uncertainty  
-+ Market Factor + SMB + HML + Error
+\[
+R_{i,t+1} = \alpha_i + \beta_i \cdot Uncertainty_t + \gamma_1 MKT_t + \gamma_2 SMB_t + \gamma_3 HML_t + \varepsilon_{i,t}
+\]
 
 Where:
 - Excess Return refers to industry portfolio returns minus the risk-free rate  
 - Uncertainty is either CPU or UCT  
-- Market, SMB, HML are the Fama-French risk factors  
+- MKT, SMB, HML are the standard Fama-French risk factors  
 
-This approach follows standard empirical asset pricing practice.
+This approach follows standard practice in empirical asset pricing research.
 
 ---
-## Results & Interpretation (What to Look For)
+
+## Results & Interpretation
 
 The main quantity of interest is **β (beta)** on the uncertainty variable (CPU or UCT).  
 It captures how next-month industry excess returns co-move with uncertainty.
@@ -65,40 +69,58 @@ Each table reports results for each industry under two specifications:
 - **FF3 controls**: Excess Return ~ Uncertainty + MKT + SMB + HML  
 
 For each industry and model you will see:
-- **Beta (β)**: economic direction and magnitude
-- **p-value**: statistical significance
-- **Significance stars** (if included in your export):  
+- **Beta (β)**: economic direction and magnitude  
+- **p-value**: statistical significance  
+- **Significance stars** (if included in export):  
   `*** p < 0.01`, `** p < 0.05`, `* p < 0.10`
 
 ### Interpretation guide
 - **β > 0**: higher uncertainty is associated with higher next-month excess returns  
-  (consistent with a “risk premium” interpretation, but not causal evidence)
+  (consistent with a risk-premium interpretation, not causal evidence)
 - **β < 0**: higher uncertainty is associated with lower next-month excess returns  
-  (consistent with reduced risk appetite / risk-off pricing)
+  (consistent with risk-off pricing)
 - If results remain significant **after FF3 controls**, the uncertainty measure provides
-  additional explanatory power beyond standard risk factors.
+  incremental explanatory power beyond standard risk factors.
+
 ---
+
+## Visualizations
+
+The project automatically generates publication-ready figures saved in the `results/` folder.
+
+### CPU (Climate Policy Uncertainty)
+
+**Betas across industries (FF3 controls):**
+![CPU Betas](results/CPU_betas.png)
+
+**Statistical significance (volcano plot):**
+![CPU Volcano](results/CPU_volcano.png)
+
+---
+
+### UCT (Uncertainty due to Climate Transition)
+
+**Betas across industries (FF3 controls):**
+![UCT Betas](results/UCT_betas.png)
+
+**Statistical significance (volcano plot):**
+![UCT Volcano](results/UCT_volcano.png)
+
+---
+
 ## Outputs
 
 Running the script produces the following files in the `results/` folder:
 
-- `CPU_table.csv` — formatted regression table (CPU)
-- `UCT_table.csv` — formatted regression table (UCT)
-- `results.csv` — raw coefficients (baseline model)
-- `results_control.csv` — raw coefficients (FF3 controls)
+- `CPU_table.csv` — formatted regression table (CPU)  
+- `UCT_table.csv` — formatted regression table (UCT)  
+- `results.csv` — raw coefficients (baseline model)  
+- `results_control.csv` — raw coefficients (FF3 controls)  
+- Four publication-ready figures (`.png`)  
 
-These tables are directly usable in academic reports, papers, or further analysis.
+These outputs are directly usable in academic reports, papers, presentations, or further analysis.
 
-## Limitations
-
-This project is intentionally focused on transparency and replicability rather than causal identification.  
-Some limitations include:
-
-- No causal identification strategy (e.g., IV, local projections, natural experiments)  
-- Results are sample-period dependent  
-- No multiple-testing correction across industries  
-
-These choices are deliberate, as the goal is to demonstrate clean empirical implementation rather than causal claims.
+---
 
 ## How to Run the Project
 
@@ -108,5 +130,4 @@ These choices are deliberate, as the goal is to demonstrate clean empirical impl
 
 ```r
 source("scripts/Data Analysis.R")
-
 
